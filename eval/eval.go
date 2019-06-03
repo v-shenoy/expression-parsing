@@ -56,6 +56,13 @@ func EvaluatePrefix(expr *ast.Prefix) (float64, error) {
 		return -right, nil
 	}
 
+	if expr.Op.Type == token.LNOT {
+		if right != 0 {
+			return 0, nil
+		}
+		return 1, nil
+	}
+
 	if IsIntegral(right) {
 		return float64(^int64(right)), nil
 	} else {
@@ -83,13 +90,13 @@ func EvaluateInfix(expr *ast.Infix) (float64, error) {
 		if right != 0 {
 			return left / right, nil
 		}
-		return 0, errors.New("Division by zero")
+		return 0, errors.New("Division by zero.")
 	case token.MOD:
 		if IsIntegral(left) && IsIntegral(right) {
 			if right != 0 {
 				return float64(int64(left) % int64(right)), nil
 			}
-			return 0, errors.New("Division by zero")
+			return 0, errors.New("Division by zero.")
 		}
 		return 0, errors.New("Modulus operand must be integral.")
 	case token.EXP:
@@ -125,6 +132,46 @@ func EvaluateInfix(expr *ast.Infix) (float64, error) {
 			return 0, errors.New("Right shift operand must be integral. Shift value must be unsigned.")
 		}
 		return 0, errors.New("Right shift operand must be integral. Shift value must be unsigned.")
+	case token.LOR:
+		if left != 0 || right != 0 {
+			return 1, nil
+		}
+		return 0, nil
+	case token.LAND:
+		if left != 0 && right != 0 {
+			return 1, nil
+		}
+		return 0, nil
+	case token.EQEQ:
+		if left == right {
+			return 1, nil
+		}
+		return 0, nil
+	case token.NEQ:
+		if left != right {
+			return 1, nil
+		}
+		return 0, nil
+	case token.GT:
+		if left > right {
+			return 1, nil
+		}
+		return 0, nil
+	case token.GTEQ:
+		if left >= right {
+			return 1, nil
+		}
+		return 0, nil
+	case token.LT:
+		if left < right {
+			return 1, nil
+		}
+		return 0, nil
+	case token.LTEQ:
+		if left <= right {
+			return 1, nil
+		}
+		return 0, nil
 	default:
 		return 0, nil
 	}

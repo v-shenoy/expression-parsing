@@ -16,6 +16,11 @@ func isDigit(ch byte) bool {
 	return (ch >= '0' && ch <= '9')
 }
 
+func (lexer *Lexer) Reset() {
+	lexer.start = 0
+	lexer.curr = 0
+}
+
 func (l Lexer) isAtEnd() bool {
 	return l.curr >= len(l.Source)
 }
@@ -93,33 +98,48 @@ func (l *Lexer) NextToken() token.Token {
 	case '%':
 		return token.Token{token.MOD, string(ch)}
 	case '=':
+		if l.match('=') {
+			return token.Token{token.EQEQ, l.Source[l.start:l.curr]}
+		}
 		return token.Token{token.EQ, string(ch)}
 	case '~':
 		return token.Token{token.NOT, string(ch)}
 	case '&':
+		if l.match('&') {
+			return token.Token{token.LAND, l.Source[l.start:l.curr]}
+		}
 		return token.Token{token.AND, string(ch)}
 	case '|':
+		if l.match('|') {
+			return token.Token{token.LOR, l.Source[l.start:l.curr]}
+		}
 		return token.Token{token.OR, string(ch)}
 	case '^':
 		return token.Token{token.XOR, string(ch)}
 	case '*':
 		if l.match('*') {
 			return token.Token{token.EXP, l.Source[l.start:l.curr]}
-		} else {
-			return token.Token{token.MUL, string(ch)}
 		}
+		return token.Token{token.MUL, string(ch)}
 	case '<':
 		if l.match('<') {
 			return token.Token{token.LEFT, l.Source[l.start:l.curr]}
-		} else {
-			return token.Token{token.ILLEGAL, string(ch)}
+		} else if l.match('=') {
+			return token.Token{token.LTEQ, l.Source[l.start:l.curr]}
 		}
+		return token.Token{token.LT, string(ch)}
 	case '>':
 		if l.match('>') {
 			return token.Token{token.RIGHT, l.Source[l.start:l.curr]}
-		} else {
-			return token.Token{token.ILLEGAL, string(ch)}
+		} else if l.match('=') {
+			return token.Token{token.GTEQ, l.Source[l.start:l.curr]}
 		}
+		return token.Token{token.GT, string(ch)}
+	case '!':
+		if l.match('=') {
+			return token.Token{token.NEQ, l.Source[l.start:l.curr]}
+		}
+		return token.Token{token.LNOT, string(ch)}
 	case 0:
 		return token.Token{token.EOF, ";"}
 	default:
@@ -127,8 +147,7 @@ func (l *Lexer) NextToken() token.Token {
 			return l.numeric()
 		} else if isLetter(ch) {
 			return l.identToken()
-		} else {
-			return token.Token{token.ILLEGAL, string(ch)}
 		}
+		return token.Token{token.ILLEGAL, string(ch)}
 	}
 }

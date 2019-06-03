@@ -1,11 +1,11 @@
-package descent
+package tdop
 
 import (
 	"expression-parsing/lexer"
 	"testing"
 )
 
-func TestDescentParser(tester *testing.T) {
+func TestTdopParser(tester *testing.T) {
 	tests := []struct {
 		input    string
 		expected string
@@ -48,7 +48,7 @@ func TestDescentParser(tester *testing.T) {
 	for index, tt := range tests {
 		l := lexer.Lexer{Source: tt.input}
 		parser := NewParser(l)
-		expr := parser.Expression()
+		expr := parser.ParseExpression(LOWEST)
 
 		if tt.expected != expr.String() {
 			tester.Errorf("test[%d], wrong operator precedence, expected = %s, got = %s",
@@ -62,7 +62,7 @@ func benchmarkExpr(input string, b *testing.B) {
 	parser := NewParser(l)
 	b.ResetTimer()
 	for n := 0; n < b.N; n++ {
-		parser.Expression()
+		parser.ParseExpression(LOWEST)
 		parser.Reset()
 	}
 }
