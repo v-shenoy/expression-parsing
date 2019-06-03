@@ -26,30 +26,30 @@ const (
 )
 
 type Token struct {
-	Type TokenType
+	Type   TokenType
 	Lexeme string
 }
 
-var toString = map[TokenType]string {
-	LPAREN: "lparen",
-	RPAREN: "rparen",
-	ADD: "addition",
-	SUB: "subtraction",
-	MUL: "multiplication",
-	DIV: "division",
-	MOD: "modulo",
-	EXP: "exponentiation",
-	EQ: "assignment",
-	NOT: "bitwise not",
-	AND: "bitwise and",
-	OR: "bitwise or",
-	XOR: "bitwise xor",
-	LEFT: "bitshift left",
-	RIGHT: "bitshift right",
-	NUM: "number",
-	IDENT: "identifier",
+var toString = map[TokenType]string{
+	LPAREN:  "lparen",
+	RPAREN:  "rparen",
+	ADD:     "addition",
+	SUB:     "subtraction",
+	MUL:     "multiplication",
+	DIV:     "division",
+	MOD:     "modulo",
+	EXP:     "exponentiation",
+	EQ:      "assignment",
+	NOT:     "bitwise not",
+	AND:     "bitwise and",
+	OR:      "bitwise or",
+	XOR:     "bitwise xor",
+	LEFT:    "bitshift left",
+	RIGHT:   "bitshift right",
+	NUM:     "number",
+	IDENT:   "identifier",
 	ILLEGAL: "illegal",
-	EOF: "end",
+	EOF:     "end",
 }
 
 func (tokenType TokenType) String() string {

@@ -1,13 +1,13 @@
 package lexer
 
 import (
-	"testing"
 	"expression-parsing/token"
+	"testing"
 )
 
 func TestOperators(tester *testing.T) {
 	input := "( ) + - * / % ** = ~ & | ^ << >>"
-	
+
 	tests := []token.Token{
 		{token.LPAREN, "("},
 		{token.RPAREN, ")"},
@@ -26,9 +26,8 @@ func TestOperators(tester *testing.T) {
 		{token.RIGHT, ">>"},
 		{token.EOF, ";"},
 	}
-	
-	
-	l := Lexer{source: input}
+
+	l := Lexer{Source: input}
 	for _, tt := range tests {
 		tok := l.NextToken()
 		if tt.Type != tok.Type {
@@ -43,7 +42,7 @@ func TestOperators(tester *testing.T) {
 
 func TestOperands(tester *testing.T) {
 	input := "1024 21.2 weight 42.3"
-	
+
 	tests := []token.Token{
 		{token.NUM, "1024"},
 		{token.NUM, "21.2"},
@@ -51,9 +50,8 @@ func TestOperands(tester *testing.T) {
 		{token.NUM, "42.3"},
 		{token.EOF, ";"},
 	}
-	
-	
-	l := Lexer{source: input}
+
+	l := Lexer{Source: input}
 	for _, tt := range tests {
 		tok := l.NextToken()
 		if tt.Type != tok.Type {
@@ -68,22 +66,21 @@ func TestOperands(tester *testing.T) {
 
 func TestLexer(tester *testing.T) {
 	input := "perimeter = 2*(l+b)"
-	
+
 	tests := []token.Token{
 		{token.IDENT, "perimeter"},
 		{token.EQ, "="},
 		{token.NUM, "2"},
 		{token.MUL, "*"},
-		{token.LPAREN, "("},		
+		{token.LPAREN, "("},
 		{token.IDENT, "l"},
 		{token.ADD, "+"},
 		{token.IDENT, "b"},
-		{token.RPAREN, ")"},		
+		{token.RPAREN, ")"},
 		{token.EOF, ";"},
 	}
-	
-	
-	l := Lexer{source: input}
+
+	l := Lexer{Source: input}
 	for _, tt := range tests {
 		tok := l.NextToken()
 		if tt.Type != tok.Type {

@@ -3,9 +3,9 @@ package lexer
 import "expression-parsing/token"
 
 type Lexer struct {
-	source string
-	start int
-	curr int
+	Source string
+	start  int
+	curr   int
 }
 
 func isLetter(ch byte) bool {
@@ -17,14 +17,14 @@ func isDigit(ch byte) bool {
 }
 
 func (l Lexer) isAtEnd() bool {
-	return l.curr >= len(l.source)
+	return l.curr >= len(l.Source)
 }
 
 func (l Lexer) peek() byte {
 	if l.isAtEnd() {
 		return 0
 	}
-	return l.source[l.curr]
+	return l.Source[l.curr]
 }
 
 func (l *Lexer) consume() byte {
@@ -32,7 +32,7 @@ func (l *Lexer) consume() byte {
 		return 0
 	}
 	l.curr += 1
-	return l.source[l.curr-1]
+	return l.Source[l.curr-1]
 }
 
 func (l *Lexer) match(expected byte) bool {
@@ -49,7 +49,7 @@ func (l *Lexer) skipWhitespace() {
 		if ch == ' ' || ch == '\r' || ch == '\t' || ch == '\n' {
 			l.consume()
 			continue
-		} 
+		}
 		break
 	}
 }
@@ -58,7 +58,7 @@ func (l *Lexer) identToken() token.Token {
 	for isLetter(l.peek()) || isDigit(l.peek()) {
 		l.consume()
 	}
-	return token.Token{token.IDENT, l.source[l.start:l.curr]}
+	return token.Token{token.IDENT, l.Source[l.start:l.curr]}
 }
 
 func (l *Lexer) numeric() token.Token {
@@ -67,68 +67,68 @@ func (l *Lexer) numeric() token.Token {
 	}
 	if l.match('.') {
 		if !isDigit(l.peek()) {
-			return token.Token{token.ILLEGAL, l.source[l.start:l.curr]}
+			return token.Token{token.ILLEGAL, l.Source[l.start:l.curr]}
 		}
-	} 
+	}
 	for isDigit(l.peek()) {
 		l.consume()
 	}
-	return token.Token{token.NUM, l.source[l.start:l.curr]}
+	return token.Token{token.NUM, l.Source[l.start:l.curr]}
 }
 
 func (l *Lexer) NextToken() token.Token {
 	l.skipWhitespace()
 	l.start = l.curr
 	switch ch := l.consume(); ch {
-		case '(':
-			return token.Token{token.LPAREN, string(ch)}
-		case ')':
-			return token.Token{token.RPAREN, string(ch)}
-		case '+':
-			return token.Token{token.ADD, string(ch)}
-		case '-':
-			return token.Token{token.SUB, string(ch)}
-		case '/':
-			return token.Token{token.DIV, string(ch)}
-		case '%':
-			return token.Token{token.MOD, string(ch)}
-		case '=':
-			return token.Token{token.EQ, string(ch)}
-		case '~':
-			return token.Token{token.NOT, string(ch)}
-		case '&':
-			return token.Token{token.AND, string(ch)}
-		case '|':
-			return token.Token{token.OR, string(ch)}
-		case '^':
-			return token.Token{token.XOR, string(ch)}
-		case '*':
-			if l.match('*') {
-				return token.Token{token.EXP, l.source[l.start:l.curr]}
-			} else {
-				return token.Token{token.MUL, string(ch)}
-			}
-		case '<':
-			if l.match('<') {
-				return token.Token{token.LEFT, l.source[l.start:l.curr]}
-			} else {
-				return token.Token{token.ILLEGAL, string(ch)}
-			}
-		case '>':
-			if l.match('>') {
-				return token.Token{token.RIGHT, l.source[l.start:l.curr]}
-			} else {
-				return token.Token{token.ILLEGAL, string(ch)}
-			}
-		case 0:
-			return token.Token{token.EOF, ";"}
-		default:
-			if isDigit(ch) {
-				return l.numeric()
-			} else if isLetter(ch) {
-				return l.identToken()
-			} else {
-				return token.Token{token.ILLEGAL, string(ch)}
-			}
+	case '(':
+		return token.Token{token.LPAREN, string(ch)}
+	case ')':
+		return token.Token{token.RPAREN, string(ch)}
+	case '+':
+		return token.Token{token.ADD, string(ch)}
+	case '-':
+		return token.Token{token.SUB, string(ch)}
+	case '/':
+		return token.Token{token.DIV, string(ch)}
+	case '%':
+		return token.Token{token.MOD, string(ch)}
+	case '=':
+		return token.Token{token.EQ, string(ch)}
+	case '~':
+		return token.Token{token.NOT, string(ch)}
+	case '&':
+		return token.Token{token.AND, string(ch)}
+	case '|':
+		return token.Token{token.OR, string(ch)}
+	case '^':
+		return token.Token{token.XOR, string(ch)}
+	case '*':
+		if l.match('*') {
+			return token.Token{token.EXP, l.Source[l.start:l.curr]}
+		} else {
+			return token.Token{token.MUL, string(ch)}
+		}
+	case '<':
+		if l.match('<') {
+			return token.Token{token.LEFT, l.Source[l.start:l.curr]}
+		} else {
+			return token.Token{token.ILLEGAL, string(ch)}
+		}
+	case '>':
+		if l.match('>') {
+			return token.Token{token.RIGHT, l.Source[l.start:l.curr]}
+		} else {
+			return token.Token{token.ILLEGAL, string(ch)}
+		}
+	case 0:
+		return token.Token{token.EOF, ";"}
+	default:
+		if isDigit(ch) {
+			return l.numeric()
+		} else if isLetter(ch) {
+			return l.identToken()
+		} else {
+			return token.Token{token.ILLEGAL, string(ch)}
+		}
 	}
 }
